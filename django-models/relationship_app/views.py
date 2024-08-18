@@ -37,8 +37,8 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
-class CustomLoginView(LoginView):
+class LoginView(LoginView):
     template_name = 'login.html'
 
-class CustomLogoutView(LogoutView):
+class LogoutView(LogoutView):
     template_name = 'logout.html'
