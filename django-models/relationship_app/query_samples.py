@@ -15,7 +15,6 @@ from relationship_app.models import Author, Book, Library, Librarian
 def query_books_by_author(author_name):
     try:
         author = Author.objects.get(name=author_name)
-        # Using objects.filter(author=author)
         books = Book.objects.filter(author=author)
         print(f"Books by {author_name}:")
         for book in books:
@@ -36,7 +35,7 @@ def list_books_in_library(library_name):
 def get_librarian_for_library(library_name):
     try:
         library = Library.objects.get(name=library_name)
-        librarian = library.librarian
+        librarian = Librarian.objects.get(library=library)
         print(f"Librarian for {library_name}: {librarian.name}")
     except Library.DoesNotExist:
         print(f"Library '{library_name}' not found.")
@@ -46,23 +45,29 @@ def get_librarian_for_library(library_name):
 def additional_queries():
     print("\nAdditional Queries:")
     
-    # Count books by an author
-    author = Author.objects.first()
-    book_count = Book.objects.filter(author=author).count()
-    print(f"Number of books by {author.name}: {book_count}")
-
-    # Get all libraries that have a specific book
-    book = Book.objects.first()
-    libraries = Library.objects.filter(books=book)
-    print(f"Libraries that have '{book.title}':")
-    for library in libraries:
+    # Get all books in a library using reverse relation
+    library = Library.objects.first()
+    if library:
+        books = library.books.all()
+        print(f"Books in {library.name} (using reverse relation):")
+        for book in books:
+            print(f"- {book.title}")
+    
+    # Find libraries with no books
+    empty_libraries = Library.objects.filter(books__isnull=True)
+    print("Libraries with no books:")
+    for library in empty_libraries:
         print(f"- {library.name}")
 
-    # Find librarians managing libraries with more than 1 book
-    librarians = Librarian.objects.filter(library__books__count__gt=1).distinct()
-    print("Librarians managing libraries with more than 1 book:")
-    for librarian in librarians:
-        print(f"- {librarian.name} ({librarian.library.name})")
+    # Find authors with more than one book
+    authors_with_multiple_books = Author.objects.annotate(book_count=models.Count('books')).filter(book_count__gt=1)
+    print("Authors with more than one book:")
+    for author in authors_with_multiple_books:
+        print(f"- {author.name}")
+
+    # Get the latest added book
+    latest_book = Book.objects.latest('id')
+    print(f"Latest added book: {latest_book.title} by {latest_book.author.name}")
 
 if __name__ == "__main__":
     query_books_by_author("J.K. Rowling")
