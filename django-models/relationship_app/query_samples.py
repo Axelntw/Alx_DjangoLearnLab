@@ -15,7 +15,8 @@ from relationship_app.models import Author, Book, Library, Librarian
 def query_books_by_author(author_name):
     try:
         author = Author.objects.get(name=author_name)
-        books = author.books.all()
+        # Using objects.filter(author=author)
+        books = Book.objects.filter(author=author)
         print(f"Books by {author_name}:")
         for book in books:
             print(f"- {book.title}")
@@ -42,8 +43,29 @@ def get_librarian_for_library(library_name):
     except Librarian.DoesNotExist:
         print(f"No librarian assigned to {library_name}.")
 
+def additional_queries():
+    print("\nAdditional Queries:")
+    
+    # Count books by an author
+    author = Author.objects.first()
+    book_count = Book.objects.filter(author=author).count()
+    print(f"Number of books by {author.name}: {book_count}")
+
+    # Get all libraries that have a specific book
+    book = Book.objects.first()
+    libraries = Library.objects.filter(books=book)
+    print(f"Libraries that have '{book.title}':")
+    for library in libraries:
+        print(f"- {library.name}")
+
+    # Find librarians managing libraries with more than 1 book
+    librarians = Librarian.objects.filter(library__books__count__gt=1).distinct()
+    print("Librarians managing libraries with more than 1 book:")
+    for librarian in librarians:
+        print(f"- {librarian.name} ({librarian.library.name})")
+
 if __name__ == "__main__":
-    # Example usage
     query_books_by_author("J.K. Rowling")
     list_books_in_library("New York Public Library")
     get_librarian_for_library("New York Public Library")
+    additional_queries()
