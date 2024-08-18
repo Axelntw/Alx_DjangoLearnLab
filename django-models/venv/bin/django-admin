@@ -1,4 +1,4 @@
-#!/Users/axel/Documents/ALX/Github/Alx_DjangoLearnLab/django_models/venv/bin/python3.12
+#!/Users/axel/Documents/ALX/Github/Alx_DjangoLearnLab/django-models/venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys
