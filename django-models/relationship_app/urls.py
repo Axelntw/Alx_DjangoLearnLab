@@ -6,9 +6,9 @@ from . import views
 
 urlpatterns = [
     path('books/', list_books, name='list_books'),
-    path('books/add/', views.add_book, name='add_book'),
-    path('books/<int:book_id>/edit/', views.edit_book, name='edit_book'),
-    path('books/<int:book_id>/delete/', views.delete_book, name='delete_book'),
+    path('books/add_book/', views.add_book, name='add_book'),
+    path('books/<int:book_id>/edit_book/', views.edit_book, name='edit_book'),
+    path('books/<int:book_id>/delete_book/', views.delete_book, name='delete_book'),
     path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_detail'),
     path('', home, name='home'),    
     path('admin-view/', admin_view.admin_view, name='admin_view'),
