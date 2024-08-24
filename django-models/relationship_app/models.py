@@ -47,7 +47,21 @@ class UserProfile(models.Model):
     def is_admin(user):
         return user.is_authenticated and user.userprofile.role == 'Admin'
 
+class Book(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=100)
+    # ... other fields ...
 
+    class Meta:
+        permissions = (
+            ("can_add_book", "Can add book"),
+            ("can_change_book", "Can change book"),
+            ("can_delete_book", "Can delete book"),
+        )
+
+    def __str__(self):
+        return self.title
+    
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
