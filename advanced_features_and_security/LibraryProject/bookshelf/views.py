@@ -3,6 +3,22 @@ from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from .models import Book
 from .forms import BookSearchForm
+from .forms import ExampleForm
+
+def example_form_view(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Process the form data
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            # You can save this data to the database or perform any other action
+            return redirect('success_page')  # Redirect to a success page
+    else:
+        form = ExampleForm()
+    
+    return render(request, 'bookshelf/form_example.html', {'form': form})
 
 def book_search(request):
     if request.method == 'POST':
