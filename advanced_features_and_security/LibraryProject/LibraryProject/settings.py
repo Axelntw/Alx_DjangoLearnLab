@@ -94,3 +94,5 @@ CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Allow inline styles
 CSP_SCRIPT_SRC = ("'self'",)  # Allow scripts only from same origin
 CSP_IMG_SRC = ("'self'",)  # Allow images only from same origin
 CSP_FONT_SRC = ("'self'",)  # Allow fonts only from same origin
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
