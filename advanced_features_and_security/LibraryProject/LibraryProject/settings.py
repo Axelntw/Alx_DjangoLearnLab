@@ -15,6 +15,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 
 TEMPLATES = [
@@ -34,7 +35,7 @@ TEMPLATES = [
 ]
 
 SECRET_KEY = 'your-secret-key-here'  # Replace with a real secret key
-DEBUG = True
+
 ALLOWED_HOSTS = []
 
 # Database
@@ -62,3 +63,34 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+# Security settings
+DEBUG = False  # Disable debug mode in production
+
+# XSS protection
+SECURE_BROWSER_XSS_FILTER = True  # Enable browser XSS protection
+
+# Clickjacking protection
+X_FRAME_OPTIONS = 'DENY'  # Prevent site from being embedded in iframes
+
+# MIME type sniffing security protection
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
+
+# CSRF and session security
+CSRF_COOKIE_SECURE = True  # Send CSRF cookie only via HTTPS
+SESSION_COOKIE_SECURE = True  # Send session cookie only via HTTPS
+
+# HTTPS enforcement
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP requests to HTTPS
+
+# HSTS (HTTP Strict Transport Security)
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Include all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow preloading of HSTS by browsers
+
+# Content Security Policy
+CSP_DEFAULT_SRC = ("'self'",)  # Default to same-origin policy for all content
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Allow inline styles
+CSP_SCRIPT_SRC = ("'self'",)  # Allow scripts only from same origin
+CSP_IMG_SRC = ("'self'",)  # Allow images only from same origin
+CSP_FONT_SRC = ("'self'",)  # Allow fonts only from same origin
