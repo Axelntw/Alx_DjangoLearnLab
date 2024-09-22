@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
-from .forms import ExtendedUserCreationForm, CommentForm
+from django.contrib.auth import login, authenticate, logout
+from .forms import CustomUserCreationForm, CommentForm
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -10,14 +10,14 @@ from .models import Post, Comment
 
 def register(request):
     if request.method == 'POST':
-        form = ExtendedUserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, 'Registration successful.')
             return redirect('profile')
     else:
-        form = ExtendedUserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
 @login_required
@@ -63,6 +63,24 @@ def delete_comment(request, comment_id):
     post_pk = comment.post.pk
     comment.delete()
     return redirect('post-detail', pk=post_pk)
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # or wherever you want to redirect after login
+        else:
+            # Return an 'invalid login' error message
+            return render(request, 'login.html', {'error': 'Invalid username or password'})
+    else:
+        return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
 
 class PostListView(ListView):
     model = Post
