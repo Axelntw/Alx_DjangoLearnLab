@@ -30,22 +30,6 @@ def profile(request):
         return redirect('profile')
     return render(request, 'registration/profile.html')
 
-@login_required
-def post_update(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.user != post.author:
-        return redirect('blog-home')
-    
-    if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-            return redirect('post-detail', pk=post.pk)
-    else:
-        form = PostForm(instance=post)
-    
-    return render(request, 'blog/post_form.html', {'form': form, 'title': 'Update Post'})
-
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
