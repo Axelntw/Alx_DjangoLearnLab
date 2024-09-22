@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate
 from .serializers import UserSerializer, UserLoginSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import generics
 from django.shortcuts import get_object_or_404
 from .models import CustomUser
 
@@ -29,6 +30,16 @@ class UserLoginView(APIView):
                 token, _ = Token.objects.get_or_create(user=user)
                 return Response({'token': token.key})
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserListView(generics.ListAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+class UserDetailView(generics.RetrieveAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
