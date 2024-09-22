@@ -33,7 +33,7 @@ def profile(request):
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
-    context_object_name = 'posts'
+    context_object_name = 'post'
     ordering = ['-created_at']
 
 class PostDetailView(DetailView):
