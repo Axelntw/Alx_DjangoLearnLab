@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from .forms import ExtendedUserCreationForm
+from .forms import ExtendedUserCreationForm, PostForm
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -29,6 +29,22 @@ def profile(request):
         messages.success(request, 'Profile updated successfully.')
         return redirect('profile')
     return render(request, 'registration/profile.html')
+
+@login_required
+def post_update(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.user != post.author:
+        return redirect('blog-home')
+    
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('post-detail', pk=post.pk)
+    else:
+        form = PostForm(instance=post)
+    
+    return render(request, 'blog/post_form.html', {'form': form, 'title': 'Update Post'})
 
 class PostListView(ListView):
     model = Post
