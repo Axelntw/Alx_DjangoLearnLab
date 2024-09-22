@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Post, Comment
 from django.db.models import Q
-
+from taggit.models import Tag
 
 def register(request):
     if request.method == 'POST':
@@ -164,3 +164,18 @@ class SearchResultsView(ListView):
                 Q(tags__name__icontains=query)
             ).distinct()
         return Post.objects.none()
+    
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/posts_by_tag.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_slug = self.kwargs['tag_slug']
+        tag = Tag.objects.get(slug=tag_slug)
+        return Post.objects.filter(tags=tag)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = Tag.objects.get(slug=self.kwargs['tag_slug'])
+        return context
