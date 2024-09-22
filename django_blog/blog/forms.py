@@ -32,5 +32,6 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['title', 'content', 'tags']
         widgets = {
-            'tags': TagWidget(),
+
+            'tags': forms.TextInput(attrs={'class': 'form-control'}),
         }

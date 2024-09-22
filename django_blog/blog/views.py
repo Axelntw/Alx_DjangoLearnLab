@@ -8,8 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Post, Comment
 from django.db.models import Q
-from taggit.models import Tag
-
+from django.contrib.contenttypes.models import Tag
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -20,7 +19,7 @@ def register(request):
             return redirect('profile')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'templates/register.html', {'form': form})
 
 @login_required
 def profile(request):
@@ -30,7 +29,7 @@ def profile(request):
         user.save()
         messages.success(request, 'Profile updated successfully.')
         return redirect('profile')
-    return render(request, 'registration/profile.html')
+    return render(request, 'templates/profile.html')
 
 @login_required
 def add_comment(request, post_id):
